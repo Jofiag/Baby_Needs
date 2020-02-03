@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Baby Needs</string>
+    <string name="action_settings">Settings</string>
+    <string name="add_item">Ajouter</string>
+    <string name="item_name">Nom</string>
+    <string name="article_quantity">Quantité</string>
+    <string name="enter_item">Entrer l\'article</string>
+    <string name="item_color">Couleur</string>
+    <string name="item_size">Taille</string>
+    <string name="save_button">ENREGISTRER</string>
+    <string name="drop_table">DROP TABLE IF EXISTS</string>
+    <string name="item_date">Date</string>
+</resources>
