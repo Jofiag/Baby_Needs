@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
         databaseHandler = new DataBaseHandler(this);
 
+        byPassActivity();
+
         //databaseHandler.deleteAllItem();
 
         //check if item was saved
@@ -59,6 +61,13 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
             }
         });
+    }
+
+    private void byPassActivity(){
+        if (databaseHandler.getItemsCount() > 0) {
+            startActivity(new Intent(MainActivity.this, ItemListActivity.class));
+            finish(); // To close the actual activity after start the new one
+        }
     }
 
     private void saveItem(View view) {
@@ -86,7 +95,9 @@ public class MainActivity extends AppCompatActivity {
             public void run()
             {
                 dialog.dismiss();
-                startActivity(new Intent(MainActivity.this, ItemListActivity.class));
+                Intent intent = new Intent(MainActivity.this, ItemListActivity.class);
+                startActivity(intent);
+                //startActivity(new Intent(MainActivity.this, ItemListActivity.class));
             }
         }, 1200);//1 seconde
     }
