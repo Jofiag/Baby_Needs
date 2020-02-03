@@ -1,5 +1,6 @@
 package com.jofiagtech.babyneeds.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private Context mContext;
     private List<Item> mItemList;
+    private AlertDialog.Builder mBuilder;
+    private AlertDialog mDialog;
 
     public RecyclerViewAdapter(Context context, List<Item> itemList)
     {
@@ -86,24 +89,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             deleteButton.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View v)
-        {
-            switch (v.getId())
-            {
-                case R.id.editButton:
-                    break;
-                case R.id.deleteButton:
-                    createConfirmationpopup();
-                    Item item = mItemList.get(getAdapterPosition());
-                    deleteItem(item.getId());
-                    break;
-                default:
-                    break;
-            }
-        }
-
         private void createConfirmationpopup() {
+            mBuilder = new AlertDialog.Builder(mContext);
+
+            View view = LayoutInflater.from(mContext).inflate(R.layout.delete_confirmation_popup, null);
+
+            Button cancelButton = view.findViewById(R.id.cancel_button);
+            Button confirmDeleteButton = view.findViewById(R.id.delete_confirmation_button);
+
+            cancelButton.setOnClickListener(this);
+            confirmDeleteButton.setOnClickListener(this);
+
+            mBuilder.setView(view);
+            mDialog = mBuilder.create();
+            mDialog.show();
         }
 
         private void deleteItem(int id) {
@@ -113,6 +112,29 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             db.deleteItem(id);
             mItemList.remove(currentPosition);
             notifyItemRemoved(currentPosition);
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            switch (v.getId())
+            {
+                case R.id.editButton:
+                    break;
+                case R.id.deleteButton:
+                    createConfirmationpopup();
+                    break;
+                case R.id.cancel_button:
+                    mDialog.dismiss();
+                    break;
+                case R.id.delete_confirmation_button:
+                    Item item = mItemList.get(getAdapterPosition());
+                    deleteItem(item.getId());
+                    mDialog.dismiss();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
