@@ -10,4 +10,7 @@
     <string name="save_button">ENREGISTRER</string>
     <string name="drop_table">DROP TABLE IF EXISTS</string>
     <string name="item_date">Date</string>
+    <string name="delete_text">Are you sure you want to delete this item?</string>
+    <string name="cancel_text">cancel</string>
+    <string name="delete_cfrmt_btn">delete</string>
 </resources>

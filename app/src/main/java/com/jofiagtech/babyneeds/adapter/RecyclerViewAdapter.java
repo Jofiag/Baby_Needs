@@ -94,12 +94,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 case R.id.editButton:
                     break;
                 case R.id.deleteButton:
+                    createConfirmationpopup();
                     Item item = mItemList.get(getAdapterPosition());
                     deleteItem(item.getId());
                     break;
                 default:
                     break;
             }
+        }
+
+        private void createConfirmationpopup() {
         }
 
         private void deleteItem(int id) {
