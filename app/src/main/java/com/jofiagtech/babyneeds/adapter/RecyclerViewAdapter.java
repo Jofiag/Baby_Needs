@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jofiagtech.babyneeds.R;
+import com.jofiagtech.babyneeds.data.DataBaseHandler;
 import com.jofiagtech.babyneeds.model.Item;
 
 import java.text.MessageFormat;
@@ -88,17 +89,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         @Override
         public void onClick(View v)
         {
-            int position = getAdapterPosition();
-
             switch (v.getId())
             {
                 case R.id.editButton:
                     break;
                 case R.id.deleteButton:
+                    Item item = mItemList.get(getAdapterPosition());
+                    deleteItem(item.getId());
                     break;
                 default:
                     break;
             }
+        }
+
+        private void deleteItem(int id) {
+            int currentPosition = getAdapterPosition();
+            DataBaseHandler db = new DataBaseHandler(mContext);
+
+            db.deleteItem(id);
+            mItemList.remove(currentPosition);
+            notifyItemRemoved(currentPosition);
         }
     }
 }
