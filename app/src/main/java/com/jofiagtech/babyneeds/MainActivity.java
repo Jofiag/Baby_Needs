@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
 
         databaseHandler = new DataBaseHandler(this);
 
-        byPassActivity();
-
         //databaseHandler.deleteAllItem();
+
+        byPassActivity();
 
         //check if item was saved
         List<Item> items = databaseHandler.getAllItems();
@@ -83,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         item.setItemQuantity(quantity);
         item.setItemSize(size);
 
-        //databaseHandler.deleteAllItem();
         databaseHandler.addItem(item);
 
         Snackbar.make(view, "Item Saved",Snackbar.LENGTH_SHORT)
@@ -99,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 //startActivity(new Intent(MainActivity.this, ItemListActivity.class));
             }
-        }, 1200);//1 seconde
+        }, 600);//1 seconde
     }
 
     private void createPopupDialog() {

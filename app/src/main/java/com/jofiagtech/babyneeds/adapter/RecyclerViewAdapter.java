@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.jofiagtech.babyneeds.R;
 import com.jofiagtech.babyneeds.data.DataBaseHandler;
 import com.jofiagtech.babyneeds.model.Item;
@@ -24,6 +26,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<Item> mItemList;
     private AlertDialog.Builder mBuilder;
     private AlertDialog mDialog;
+    private LayoutInflater mInflater;
+    //private DataBaseHandler db;
 
     public RecyclerViewAdapter(Context context, List<Item> itemList)
     {
@@ -69,12 +73,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Button editButton;
         Button deleteButton;
 
-        private int id;
-
         ViewHolder(@NonNull View itemView, Context ctx)
         {
             super(itemView);
             mContext = ctx;
+            //db = new DataBaseHandler(mContext);
 
             itemName = itemView.findViewById(R.id.itr_name);
             itemQuantity = itemView.findViewById(R.id.itr_quantity);
@@ -86,56 +89,129 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             deleteButton = itemView.findViewById(R.id.deleteButton);
 
             editButton.setOnClickListener(this);
+
             deleteButton.setOnClickListener(this);
         }
 
         private void createConfirmationpopup() {
-            mBuilder = new AlertDialog.Builder(mContext);
 
-            View view = LayoutInflater.from(mContext).inflate(R.layout.delete_confirmation_popup, null);
+        }
+
+        private void deleteItem(final int id) {
+            mBuilder = new AlertDialog.Builder(mContext);
+            mInflater = LayoutInflater.from(mContext);
+
+            View view = mInflater.inflate(R.layout.delete_confirmation_popup, null);
 
             Button cancelButton = view.findViewById(R.id.cancel_button);
             Button confirmDeleteButton = view.findViewById(R.id.delete_confirmation_button);
 
-            cancelButton.setOnClickListener(this);
-            confirmDeleteButton.setOnClickListener(this);
+            mBuilder.setView(view);
+            mDialog = mBuilder.create();
+            mDialog.show();
+
+            cancelButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v) {
+                    mDialog.dismiss();
+                }
+            });
+
+            confirmDeleteButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    DataBaseHandler db = new DataBaseHandler(mContext);
+                    db.deleteItem(id);
+                    mItemList.remove(getAdapterPosition());
+                    notifyItemRemoved(getAdapterPosition());
+
+                    mDialog.dismiss();
+                }
+            });
+        }
+
+        private void editItem(final Item newItem) {
+
+            mBuilder = new AlertDialog.Builder(mContext);
+            mInflater = LayoutInflater.from(mContext);
+
+            View view = mInflater.inflate(R.layout.popup, null);
+
+            TextView title = view.findViewById(R.id.title);
+            final EditText babyItem = view.findViewById(R.id.article_name);
+            final EditText itemQuantity = view.findViewById(R.id.article_quantity);
+            final EditText itemColor = view.findViewById(R.id.item_color);
+            final EditText itemSize = view.findViewById(R.id.item_size);
+            Button saveButton = view.findViewById(R.id.save_button);
+
+            title.setText(R.string.update_title);
+            babyItem.setText(newItem.getItemName());
+            itemQuantity.setText(String.valueOf(newItem.getItemQuantity()));
+            itemColor.setText(newItem.getItemColor());
+            itemSize.setText(String.valueOf(newItem.getItemSize()));
+            saveButton.setText(R.string.update_txt);
 
             mBuilder.setView(view);
             mDialog = mBuilder.create();
             mDialog.show();
-        }
 
-        private void deleteItem(int id) {
-            int currentPosition = getAdapterPosition();
-            DataBaseHandler db = new DataBaseHandler(mContext);
+            saveButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    DataBaseHandler db = new DataBaseHandler(mContext);
 
-            db.deleteItem(id);
-            mItemList.remove(currentPosition);
-            notifyItemRemoved(currentPosition);
+                    newItem.setItemName(babyItem.getText().toString().trim());
+                    newItem.setItemQuantity(Integer.parseInt(itemQuantity.getText().toString().trim()));
+                    newItem.setItemColor(itemColor.getText().toString().trim());
+                    newItem.setItemSize(Integer.parseInt(itemSize.getText().toString().trim()));
+
+                    if (!babyItem.getText().toString().isEmpty()
+                            && !itemColor.getText().toString().isEmpty()
+                            && !itemQuantity.getText().toString().isEmpty()
+                            && !itemSize.getText().toString().isEmpty()) {
+
+                        db.updateItem(newItem);
+                        notifyItemChanged(getAdapterPosition(), newItem);
+                    }
+                    else
+                        Snackbar.make(v, "Empty Fields not Allowed", Snackbar.LENGTH_SHORT)
+                                .show();
+
+                    mDialog.dismiss();
+                }
+            });
         }
 
         @Override
-        public void onClick(View v)
-        {
-            switch (v.getId())
-            {
+        public void onClick(View v) {
+
+            Item item = mItemList.get(getAdapterPosition());
+
+            switch (v.getId()) {
                 case R.id.editButton:
+                   editItem(item);
                     break;
                 case R.id.deleteButton:
-                    createConfirmationpopup();
+                    deleteItem(item.getId());
                     break;
-                case R.id.cancel_button:
+                /*case R.id.cancel_button:
                     mDialog.dismiss();
                     break;
                 case R.id.delete_confirmation_button:
                     Item item = mItemList.get(getAdapterPosition());
                     deleteItem(item.getId());
                     mDialog.dismiss();
-                    break;
+                    break;*/
                 default:
                     break;
             }
         }
+
     }
 }
 

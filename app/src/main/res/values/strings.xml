@@ -13,4 +13,6 @@
     <string name="delete_text">Are you sure?</string>
     <string name="cancel_text">cancel</string>
     <string name="delete_cfrmt_btn">delete</string>
+    <string name="update_txt">Update</string>
+    <string name="update_title">Modifier l\'article</string>
 </resources>
