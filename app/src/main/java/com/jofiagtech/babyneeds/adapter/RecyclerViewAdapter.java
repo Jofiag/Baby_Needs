@@ -1,5 +1,6 @@
 package com.jofiagtech.babyneeds.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -93,15 +94,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             deleteButton.setOnClickListener(this);
         }
 
-        private void createConfirmationpopup() {
-
-        }
-
         private void deleteItem(final int id) {
             mBuilder = new AlertDialog.Builder(mContext);
             mInflater = LayoutInflater.from(mContext);
 
-            View view = mInflater.inflate(R.layout.delete_confirmation_popup, null);
+            @SuppressLint("InflateParams") View view = mInflater.inflate(R.layout.delete_confirmation_popup, null);
 
             Button cancelButton = view.findViewById(R.id.cancel_button);
             Button confirmDeleteButton = view.findViewById(R.id.delete_confirmation_button);
@@ -138,7 +135,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             mBuilder = new AlertDialog.Builder(mContext);
             mInflater = LayoutInflater.from(mContext);
 
-            View view = mInflater.inflate(R.layout.popup, null);
+            @SuppressLint("InflateParams") View view = mInflater.inflate(R.layout.popup, null);
 
             TextView title = view.findViewById(R.id.title);
             final EditText babyItem = view.findViewById(R.id.article_name);
@@ -199,14 +196,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 case R.id.deleteButton:
                     deleteItem(item.getId());
                     break;
-                /*case R.id.cancel_button:
-                    mDialog.dismiss();
-                    break;
-                case R.id.delete_confirmation_button:
-                    Item item = mItemList.get(getAdapterPosition());
-                    deleteItem(item.getId());
-                    mDialog.dismiss();
-                    break;*/
                 default:
                     break;
             }
@@ -214,77 +203,3 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     }
 }
-
-/*public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-
-    private Context context;
-    private List<Item> itemList;
-
-    public RecyclerViewAdapter(Context context, List<Item> itemList) {
-        this.context = context;
-        this.itemList = itemList;
-    }
-
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.item_list_row, viewGroup, false);
-
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        Item item = itemList.get(position); // each item object inside of our list
-
-
-    }
-
-
-    @Override
-    public int getItemCount() {
-        return itemList.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        public TextView itemName;
-        public TextView itemQuantity;
-        public TextView itemColor;
-        public TextView itemSize;
-        public TextView dateAdded;
-        public Button editButton;
-        public Button deleteButton;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            itemName = itemView.findViewById(R.id.itr_name);
-            itemQuantity = itemView.findViewById(R.id.itr_quantity);
-            itemColor = itemView.findViewById(R.id.item_color);
-            itemSize = itemView.findViewById(R.id.item_size);
-            dateAdded = itemView.findViewById(R.id.itr_date);
-
-            editButton = itemView.findViewById(R.id.editButton);
-            deleteButton = itemView.findViewById(R.id.deleteButton);
-
-            editButton.setOnClickListener(this);
-            deleteButton.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-
-            switch (v.getId()){
-                case R.id.editButton:
-                    break;
-                case R.id.deleteButton:
-                    break;
-                    default:
-                        break;
-            }
-        }
-    }
-}*/
